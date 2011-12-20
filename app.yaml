@@ -1,0 +1,47 @@
+application: sovinswm
+version: one
+runtime: python27
+api_version: 1
+threadsafe: true
+
+handlers:
+
+- url: /m
+  static_dir: media/
+
+- url: /.*
+  script: data.app
+
+#- url: /favicon.ico
+#  static_files: media/images/favicon.ico
+#  upload: media/images/favicon.ico
+
+skip_files:
+- ^(.*/)?app\.yaml
+- ^(.*/)?app\.yml
+- ^(.*/)?index\.yaml
+- ^(.*/)?index\.yml
+- ^(.*/)?#.*#
+- ^(.*/)?.*~
+- ^(.*/)?.*\.py[co]
+- ^(.*/)?.*/RCS/.*
+- ^(.*/)?\..*
+- ^(.*/)?.*\.bak$
+- ^local.*$
+- ^var.*$
+
+#builtins:
+#- appstats: on
+#- deferred: on
+
+libraries:
+#- name: django
+#  version: "1.2"
+- name: jinja2
+  version: latest
+#- name: yaml
+#  version: latest
+- name: markupsafe
+  version: latest
+##- name: webob # for google tasks deferred
+##  version: latest

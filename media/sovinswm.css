@@ -1,0 +1,63 @@
+#map {
+    width: 90%;
+    height: 600px;
+    margin: 1em auto;
+    border: 3px solid black;
+    -moz-box-shadow: 10px 10px 5px #888;
+    -webkit-box-shadow: 10px 10px 5px #888;
+    box-shadow: 10px 10px 5px #888;
+    margin-bottom: 40px;
+}
+
+body { }
+
+h1, h2 {
+    padding: 0.5em 1em;
+    text-align: center;
+    font-family: "Droid Serif", serif;
+}
+
+h1 { 
+    text-shadow: 2px 2px 4px #888;
+}
+
+h2 {
+    text-shadow: 1px 1px 2px #ccc;
+}
+
+header {
+    text-align: center;
+}
+
+div.crisis {
+    max-width: 240px;
+    border-top: 1px solid gray;
+}
+
+span.year {
+    font-size: 200%;
+}
+
+span.amt {
+    color: #BBF;
+}
+
+.jvectormap-label {
+    font-family: "Droid Sans", serif;
+    color: #EEE;
+}
+
+div.license {
+    margin: 4ex auto;
+    text-align: center;
+}
+
+table {
+    margin: 2em auto;
+}
+
+table td {
+    vertical-align: top;
+    padding: 10px;
+}
+

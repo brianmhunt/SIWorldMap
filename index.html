@@ -1,0 +1,107 @@
+<html>
+<head>
+    <title>Sovereign Insolvency World Map</title>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+
+    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+        google.load("jquery", "1.6"); // google.load("jqueryui", "1.8");
+    </script>
+    
+    <script src='m/jvm/jquery.vector-map.js'type="text/javascript">
+    </script>
+    <script src="m/jvm/world-en.js" type="text/javascript"></script>
+    
+
+    <link rel='stylesheet' type='text/css'
+          href='m/jvm/jquery.vector-map.css' />
+    <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Droid+Serif' rel='stylesheet' type='text/css'>
+    
+              
+
+    <link rel='stylesheet' type='text/css' href='m/sovinswm.css'/>
+    <script src='m/sovinswm.js'></script>
+</head>
+
+<body>
+    <h1>The Sovereign Insolvency World Map</h1>
+    <h2>A visualization of the history of states becoming unable to pay their
+    debts.</h2>
+
+    <div id="map">Map</div>
+
+
+    <h2>Share</h2>
+    <div style='margin-left: auto; margin-right: auto'>
+        <table><tr>
+        
+        <td> <!-- ugh. tables. -->
+        <script src="http://platform.linkedin.com/in.js" type="text/javascript"></script>
+        <script type="IN/Share" data-counter="right"></script>
+        
+
+       <a href="https://twitter.com/share" class="twitter-share-button" data-via="brianmhunt" data-lang="en">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+        </td>
+        </tr>
+
+        <tr><td>
+        <div class="fb-like" data-href="http://sovinswm.appspot.com" data-send="true" data-width="450" data-show-faces="false" data-font="lucida grande"></div>
+        <div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_GB/all.js#xfbml=1&appId=142771704839";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+        </td>
+        
+        </tr></table>
+    </div>
+
+    <script>
+        $(function () {
+            siwm.update();
+        });
+    </script>
+
+    <h2>About the author</h2>
+    <table>
+    <thead>
+        <th>Contact information</th>
+        <th>Social media</th>
+        <th>LinkedIn</th>
+    </thead>
+    <tr>
+        <td>
+        Brian M Hunt<br/>
+        28 Panorama Way<br/>
+        Stoney Creek, Ontario L8E 6C6<br/>
+        Canada<br/>
+        Tel: +1-289-684-4677<br/>
+        Email: <a href='mailto:brianmhunt@gmail.com'>brianmhunt@gmail.com</a>
+        </td>
+        <td>
+            Wordpress: <a href="http://sovins.wordpress.com/">sovins.wordpress.com</a><br/>
+            Twitter: <a href='https://twitter.com/#!/brianmhunt'>@brianmhunt</a>
+        </td>
+        <td style='width: 360px'>
+            <script src="http://platform.linkedin.com/in.js" type="text/javascript"></script>
+            <script type="IN/MemberProfile" data-id="http://www.linkedin.com/in/brianmhunt" data-format="inline" data-related="false"></script>
+        </td>
+    </tr>
+    </table>
+
+    <div id="msg"></div>
+
+    <h2>License</h2>
+
+    <div class='license'>
+        <a rel="license" href="http://creativecommons.org/licenses/by/3.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/3.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/InteractiveResource" property="dct:title" rel="dct:type">Sovereign Insolvency World Map</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="https://sovinswm.appspot.com" property="cc:attributionName" rel="cc:attributionURL">Brian M Hunt</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 Unported License</a>.<br />Based on a work at <a xmlns:dct="http://purl.org/dc/terms/" href="https://sovinswm.appspot.com" rel="dct:source">sovinswm.appspot.com</a>.
+    </div>
+
+</body>
+</html>
