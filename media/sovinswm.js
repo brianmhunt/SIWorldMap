@@ -83,11 +83,12 @@ var siwm = siwm || (function () {
                                    + "</span> ");
 
                 if (crisis.Comment !== null) {
-                    crisis_html.append(crisis.Comment);
+                    crisis_html.append("<span class='comment'>"
+                        + crisis.Comment + "</span>");
                 }
 
-                if (crisis.Amount !== null) {
-                    crisis_html.append("<br/>Amount (million): <span class=amt>" +
+                if (crisis.Amount !== null && $.trim(crisis.Amount) !== '') {
+                    crisis_html.append("<br style='clear:both'/>Amount (million): <span class=amt>" +
                         crisis.Amount + "</span>");
                 }
 

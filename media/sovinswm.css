@@ -25,21 +25,33 @@ h2 {
     text-shadow: 1px 1px 2px #ccc;
 }
 
+th {
+    text-shadow: 1px 1px 2px #ccc;
+}
+
 header {
     text-align: center;
+    font-size: 120%;
 }
 
 div.crisis {
     max-width: 240px;
     border-top: 1px solid gray;
+    padding: 2px;
 }
 
 span.year {
     font-size: 200%;
+    float: left;
+    padding-right: 4px;
+}
+
+span.comment {
+    color: #CCC;
 }
 
 span.amt {
-    color: #BBF;
+    color: #88F;
 }
 
 .jvectormap-label {

@@ -1,0 +1,19 @@
+syntax: glob
+
+*.pyc
+*.swo
+*~
+.*~
+.DS_Store
+.*.swp
+.swp
+local/*
+var/*
+guten/pool/*
+index.yaml
+var
+*synctex.gz*
+*.log
+*.pdf
+*.aux
+
