@@ -55,7 +55,8 @@ def hello():
         logging.error("Unable to get DATA URL.")
         abort(500)
 
-    _dc = [row for row in csv.DictReader(csv_data)]
+    _dc = [row for row in csv.DictReader(csv_data)] 
+
     memcache.set("dc", _dc)
 
     return jsonify(data=_dc)
@@ -63,6 +64,13 @@ def hello():
 @app.route('/')
 def main():
     return send_file("index.html")
+
+@app.route('/flush')
+def flush():
+    global _dc
+    _dc = None
+    memcache.flush_all()
+    return "Flushed."
 
 if __name__ == "__main__":
     app.run()

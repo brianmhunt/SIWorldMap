@@ -13,13 +13,13 @@
 .jvectormap-zoomin, .jvectormap-zoomout {
     position: absolute;
     -moz-border-radius: 3px;
-    background: #292929;
+    background: #F9F9F9;
     padding: 3px;
-    color: white;
-    width: 10px;
-    height: 10px;
+    color: black;
+    width: 15px;
+    height: 15px;
     cursor: pointer;
-    line-height: 10px;
+    line-height: 15px;
     text-align: center;
 }
 
@@ -30,5 +30,5 @@
 
 .jvectormap-zoomout {
     left: 10px;
-    top: 30px;
+    top: 40px;
 }

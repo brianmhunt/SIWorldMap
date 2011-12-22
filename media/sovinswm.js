@@ -14,7 +14,81 @@ var siwm = siwm || (function () {
             backgroundColor: "#111",
             color: "#666",
             hoverColor: '#DD0'
-        };
+        },
+        _tt_cache = {};
+
+    /*
+     * Return a jQuery element (not in the DOM) with the content of the
+     * tooltip for a particular country.
+     */
+    function _tooltip_content(crises_map, country_code, country_name) {
+        var country_crises,
+            tt_html = _tt_cache[country_code]; // tooltip html
+
+        if (tt_html !== undefined) {
+            return tt_html;
+        }
+
+        country_crises = crises_map[country_code];
+
+        // no crises for this country.
+        if (country_crises === undefined) {
+            tt_html = $("<div><header>" + country_name + "</header></div>");
+            tt_html.append("No history of default.");
+            return tt_html;
+        }
+
+        tt_html = $("<div><header>" + country_name + "</header></div>");
+
+        country_crises.sort(function (a, b) {
+            return parseInt(a.Year) - parseInt(b.Year);
+        });
+
+        $.each(country_crises, function (i, crisis) {
+            var crisis_html = $("<div class='crisis'></div>");
+
+            crisis_html.append("<span class='year'>" + crisis.Year 
+                               + "</span> ");
+
+            if (crisis.Comment !== null) {
+                crisis_html.append("<span class='comment'>"
+                    + crisis.Comment + "</span>");
+            }
+
+            if (crisis.Amount !== null && $.trim(crisis.Amount) !== '') {
+                crisis_html.append("<br style='clear:both'/>Amount (million): <span class=amt>" +
+                    crisis.Amount + "</span>");
+            }
+
+            tt_html.append(crisis_html)
+                .append($("<br style='clear:both'/>"));
+        });
+
+        _tt_cache[country_code] = tt_html; // save cache.
+        return tt_html;
+    } // _tooltip_content
+
+    /*
+     * Show the tooltip for this Country
+     *
+    function _show_tooltip(crises_map, country_code, country_name) {
+        $("#map, h2").qtip({
+            content: "HEY", //tt_html,
+            position: {
+                my: 'top left',
+                target: 'mouse',
+                viewport: $(window),
+                adjust: {
+                    x: 10, y: 10
+                }
+            },
+            hide: {
+                fixed: true
+            },
+            style: 'ui-tooltip-shadow'
+        }); // qtip
+    } // _show_tooltip
+    // */
 
     /*
      * Given data from the server, update the map
@@ -41,7 +115,14 @@ var siwm = siwm || (function () {
          *     ~~~~~~~~~~~~
          */
         $.each(crises, function (i, crisis) {
-            var country_code = name_to_iso3166(crisis.Country);
+            var country_code;
+
+            if (crisis.Country === null) {
+                log("Invalid crisis data: " + JSON.stringify(crisis));
+                return;
+            }
+            
+            country_code = name_to_iso3166(crisis.Country);
             crises[i]._cc = country_code; // map crisis to country code
             crisis.Amount = crisis['Amount (million)']; // shorthand
             colors[country_code] = '#F00'; // highlight countries w/ default
@@ -62,40 +143,11 @@ var siwm = siwm || (function () {
          *     ~~~~~~
          */
         $("#map").bind('labelShow.jvectormap', function (event, label, code) {
-            var country_crises = crises_map[code],
-                country_name,
-                label_html;
-
-            // no crises for this country.
-            if (country_crises === undefined) {
-                return true;
-            }
-
-            country_name = label.text();
-
-            label_html = $("<div><header>" + country_name 
-                + "</header></div>");
-
-            $.each(country_crises, function (i, crisis) {
-                var crisis_html = $("<div class='crisis'></div>");
-
-                crisis_html.append("<span class='year'>" + crisis.Year 
-                                   + "</span> ");
-
-                if (crisis.Comment !== null) {
-                    crisis_html.append("<span class='comment'>"
-                        + crisis.Comment + "</span>");
-                }
-
-                if (crisis.Amount !== null && $.trim(crisis.Amount) !== '') {
-                    crisis_html.append("<br style='clear:both'/>Amount (million): <span class=amt>" +
-                        crisis.Amount + "</span>");
-                }
-
-                label_html.append(crisis_html);
-            });
-
-            label.html(label_html);
+            label.html(_tooltip_content(crises_map, code, label.text()));
+            return true;
+            //_show_tooltip(crises_map, code, label.text());
+            //event.preventDefault();
+            //return false;
         });
 
     } // _update_map
@@ -109,11 +161,15 @@ var siwm = siwm || (function () {
      * Convert a Country name to its ISO3166 code
      */
     function name_to_iso3166(country_name) {
-        var name = $.trim(country_name.toUpperCase()),
-            cc = siwm._iso3166[name];
+        var name,
+            cc;
+
+        name = $.trim(country_name.toUpperCase());
+        cc   = siwm._iso3166[name];
 
         if (cc === undefined) {
             log("Country \"" + name + "\" has no iso3166 code");
+            return '';
         } 
 
         return cc.toLowerCase();
@@ -124,7 +180,10 @@ var siwm = siwm || (function () {
     };
 })();
 
-
+/*
+ * Mapping of canonical and colloquial country names to their
+ * ISO3166 (alpha-2) codes.
+ */
 siwm._iso3166 = {
 	"AFGHANISTAN": "AF",
 	"�LAND ISLANDS": "AX",
@@ -153,6 +212,7 @@ siwm._iso3166 = {
 	"BERMUDA": "BM",
 	"BHUTAN": "BT",
 	"BOLIVIA, PLURINATIONAL STATE OF": "BO",
+    "BOLIVIA": "BO",
 	"BONAIRE, SINT EUSTATIUS AND SABA": "BQ",
 	"BOSNIA AND HERZEGOVINA": "BA",
 	"BOTSWANA": "BW",
@@ -180,7 +240,7 @@ siwm._iso3166 = {
 	"CONGO, THE DEMOCRATIC REPUBLIC OF THE": "CD",
 	"COOK ISLANDS": "CK",
 	"COSTA RICA": "CR",
-	"C�TE D'IVOIRE": "CI",
+	"COTE D'IVOIRE": "CI",
 	"CROATIA": "HR",
 	"CUBA": "CU",
 	"CURA�AO": "CW",
@@ -231,6 +291,7 @@ siwm._iso3166 = {
 	"INDIA": "IN",
 	"INDONESIA": "ID",
 	"IRAN, ISLAMIC REPUBLIC OF": "IR",
+	"IRAN": "IR",
 	"IRAQ": "IQ",
 	"IRELAND": "IE",
 	"ISLE OF MAN": "IM",
@@ -258,6 +319,7 @@ siwm._iso3166 = {
 	"LUXEMBOURG": "LU",
 	"MACAO": "MO",
 	"MACEDONIA, THE FORMER YUGOSLAV REPUBLIC OF": "MK",
+	"MACEDONIA": "MK",
 	"MADAGASCAR": "MG",
 	"MALAWI": "MW",
 	"MALAYSIA": "MY",
@@ -284,6 +346,7 @@ siwm._iso3166 = {
 	"NAURU": "NR",
 	"NEPAL": "NP",
 	"NETHERLANDS": "NL",
+	"THE NETHERLANDS": "NL",
 	"NEW CALEDONIA": "NC",
 	"NEW ZEALAND": "NZ",
 	"NICARAGUA": "NI",
@@ -302,6 +365,7 @@ siwm._iso3166 = {
 	"PARAGUAY": "PY",
 	"PERU": "PE",
 	"PHILIPPINES": "PH",
+	"THE PHILIPPINES": "PH",
 	"PITCAIRN": "PN",
 	"POLAND": "PL",
 	"PORTUGAL": "PT",
@@ -373,6 +437,7 @@ siwm._iso3166 = {
 	"VENEZUELA, BOLIVARIAN REPUBLIC OF": "VE",
 	"VENEZUELA": "VE",
 	"VIET NAM": "VN",
+	"VIETNAM": "VN",
 	"VIRGIN ISLANDS, BRITISH": "VG",
 	"VIRGIN ISLANDS, U.S.": "VI",
 	"WALLIS AND FUTUNA": "WF",
