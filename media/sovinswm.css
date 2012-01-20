@@ -42,9 +42,31 @@ table { border-collapse: collapse; border-spacing: 0; }
  */
 
 body { 
-    font-family: "Droid Sans", serif;
+    font-family: "Georgia", serif;
+    font-size: 18px;
     background-color: #2e2e2e;
     color: #e2e2b1;
+    line-height: 26px;
+}
+
+a, a:hover, a:active, a:visited {
+    color: #fbfbcb;
+    border-bottom: 1px dashed #8b8b6b;
+    text-decoration: none;
+}
+
+a:hover {
+    border-bottom: 1px dashed #fbfbcb;
+}
+
+#share {
+    width: 395px;
+    margin: 0px auto;
+    text-align: center;
+}
+
+#share a, #share a:hover {
+    border-bottom: none;
 }
 
 h1, h2, h3 {
@@ -165,7 +187,15 @@ div.about {
     border-top: 1px solid gray;
 }
 
-#content {
-    width: 900px;
+div.even, div.odd {
+    width: 870px;
     margin: 0px auto;
+}
+
+div.even {
+    background-color: #6e6e6e;
+}
+
+div.odd {
+    background-color: #4e4e4e;
 }
