@@ -95,11 +95,12 @@ h1 {
 }
 
 h2 {
-    text-shadow: 1px 1px 4px #000;
+    font-weight: normal;
+    text-shadow: 2px 2px 3px #000;
     font-size: 120%;
     text-align: center;
     padding-top: 150px;
-    font-style: italic;
+    font-family: "Droid Sans", sans-serif;
 }
 
 h3 {
