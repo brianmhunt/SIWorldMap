@@ -1,184 +1,196 @@
+/*global $: false, jvm: false */
 /*
+ *
  * Sovereign Insolvency World Map
  *
  * Copyright (C) Brian M Hunt 2011.
+ *
  */
 'use strict';
 
-function log(msg) {
-    $("#msg").append("<div>" + msg + "</div>");
-}
-
 var siwm = siwm || (function () {
-    var vectorMapSettings = {
-            backgroundColor: "#111",
-            color: "#666",
-            hoverColor: '#DD0'
-        },
-        _tt_cache = {};
+  /*
+   * Map is the jVectorMap instance
+   */
+  var map,
 
     /*
-     * Return a jQuery element (not in the DOM) with the content of the
-     * tooltip for a particular country.
-     */
-    function _tooltip_content(crises_map, country_code, country_name) {
-        var country_crises,
-            tt_html = _tt_cache[country_code]; // tooltip html
+     * crises maps country code to crisis information
+     */ 
+    crises_map = {},
 
-        if (tt_html !== undefined) {
-            return tt_html;
-        }
+    template = Hogan.compile($("#details-template").text());
 
-        country_crises = crises_map[country_code];
+/*
+ * Return a jQuery element (not in the DOM) with the content of the
+ * tooltip for a particular country.
+ */
+  function tooltip_content(country_code, country_name) {
+    var country_crises;
 
-        // no crises for this country.
-        if (country_crises === undefined) {
-            tt_html = $("<div><header>" + country_name + "</header></div>");
-            tt_html.append("No history of default.");
-            return tt_html;
-        }
+    country_crises = crises_map[country_code].sort(function (a, b) {
+      return parseInt(a.Year, 10) - parseInt(b.Year, 10);
+    });
 
-        tt_html = $("<div><header>" + country_name + "</header></div>");
+    console.log("CRISES:", country_crises);
 
-        country_crises.sort(function (a, b) {
-            return parseInt(a.Year) - parseInt(b.Year);
-        });
+    return template.render({
+      name: country_name,
+      crises: country_crises
+    });
 
-        $.each(country_crises, function (i, crisis) {
-            var crisis_html = $("<div class='crisis'></div>");
+    // TODO eg _.template
+    // no crises for this country.
+    if (country_crises === undefined) {
+      tt_html = $("<div><header>" + country_name + "</header></div>");
+      tt_html.append("No history of default.");
+      return tt_html;
+    }
 
-            crisis_html.append("<span class='year'>" + crisis.Year 
-                               + "</span> ");
+    tt_html = $("<div><header>" + country_name + "</header></div>");
 
-            if (crisis.Comment !== null) {
-                crisis_html.append("<span class='comment'>"
-                    + crisis.Comment + "</span>");
-            }
 
-            if (crisis.Amount !== null && $.trim(crisis.Amount) !== '') {
-                crisis_html.append("<br style='clear:both'/>Amount (million): <span class=amt>" +
-                    crisis.Amount + "</span>");
-            }
+    $.each(country_crises, function (i, crisis) {
+      var crisis_html = $("<div class='crisis'></div>");
 
-            tt_html.append(crisis_html)
-                .append($("<br style='clear:both'/>"));
-        });
+      crisis_html.append("<span class='year'>" + crisis.Year 
+        + "</span> ");
 
-        _tt_cache[country_code] = tt_html; // save cache.
-        return tt_html;
-    } // _tooltip_content
+      if (crisis.Comment !== null) {
+        crisis_html.append("<span class='comment'>"
+          + crisis.Comment + "</span>");
+      }
 
-    /*
-     * Show the tooltip for this Country
+      if (crisis.Amount !== null && $.trim(crisis.Amount) !== '') {
+        crisis_html.append("<span>; Amount (million): <span class=amt>" +
+          crisis.Amount + "</span></span>");
+      }
+
+      tt_html.append(crisis_html);
+    });
+
+    crises[country_code] = tt_html; // save cache.
+    return tt_html;
+  } // _tooltip_content
+
+  /*
+   * Show the tooltip for this Country
+   *
+   function _show_tooltip(crises_map, country_code, country_name) {
+   $("#map, h2").qtip({
+   content: "HEY", //tt_html,
+   position: {
+   my: 'top left',
+   target: 'mouse',
+   viewport: $(window),
+   adjust: {
+   x: 10, y: 10
+   }
+   },
+   hide: {
+   fixed: true
+   },
+   style: 'ui-tooltip-shadow'
+   }); // qtip
+   } // _show_tooltip
+  // */
+
+  /*
+   * Convert a Country name to its ISO3166 code
+   */
+  function name_to_iso3166(country_name) {
+    var name,
+        cc;
+
+    name = $.trim(country_name.toUpperCase());
+    cc   = siwm._iso3166[name];
+
+    if (cc === undefined) {
+      console.log("Country \"" + name + "\" has no iso3166 code");
+      return '';
+    } 
+
+    return cc.toUpperCase();
+  } // name_to_iso3166
+
+  /*
+   * Given data from the server, update the map
+   */
+  function update_map(data) {
+    /* 
+     * Crises: [Crisis, ...]
      *
-    function _show_tooltip(crises_map, country_code, country_name) {
-        $("#map, h2").qtip({
-            content: "HEY", //tt_html,
-            position: {
-                my: 'top left',
-                target: 'mouse',
-                viewport: $(window),
-                adjust: {
-                    x: 10, y: 10
-                }
-            },
-            hide: {
-                fixed: true
-            },
-            style: 'ui-tooltip-shadow'
-        }); // qtip
-    } // _show_tooltip
-    // */
+     * Crisis: {
+     *  Comment: ... (for tooltip)
+     *  Country: Country name
+     *  Source: how we know about the default
+     *  Year: year of the default
+     *  Amount (million): amount of the default
+     * }
+     */
+    var crises = data.data,
+        colors = {},
+        labels = {};
+
+    /**
+     * Add country code to crises map
+     *     ~~~~~~~~~~~~
+     */
+    $.each(crises, function (i, crisis) {
+      var country_code;
+
+      if (crisis.Country === null) {
+        console.log("Invalid crisis data: " + JSON.stringify(crisis));
+        return;
+      }
+
+      country_code = name_to_iso3166(crisis.Country);
+      crises[i]._cc = country_code; // map crisis to country code
+      crisis.Amount = crisis['Amount (million)']; // shorthand
+      colors[country_code] = '#F00'; // highlight countries w/ default
+      if (crises_map[country_code] === undefined) {
+        crises_map[country_code] = []; // a list of crises by country
+      }
+      crises_map[country_code].push(crisis);
+    }); // each crisis
 
     /*
-     * Given data from the server, update the map
+     * Set colors
+     *     ~~~~~~
      */
-    function _update_map(data) {
-        /* 
-         * Crises: [Crisis, ...]
-         *
-         * Crisis: {
-         *  Comment: ... (for tooltip)
-         *  Country: Country name
-         *  Source: how we know about the default
-         *  Year: year of the default
-         *  Amount (million): amount of the default
-         * }
-         */
-        var crises = data['data'],
-            crises_map = {},
-            colors = {},
-            labels = {};
+    // map.series.regions[0].setValues(crises_map);
+    console.log("Crisis map: ", crises_map);
+    console.log("Colors map: ", colors);
 
-        /**
-         * Add country code to crises map
-         *     ~~~~~~~~~~~~
-         */
-        $.each(crises, function (i, crisis) {
-            var country_code;
-
-            if (crisis.Country === null) {
-                log("Invalid crisis data: " + JSON.stringify(crisis));
-                return;
-            }
-            
-            country_code = name_to_iso3166(crisis.Country);
-            crises[i]._cc = country_code; // map crisis to country code
-            crisis.Amount = crisis['Amount (million)']; // shorthand
-            colors[country_code] = '#F00'; // highlight countries w/ default
-            if (crises_map[country_code] === undefined) {
-                crises_map[country_code] = []; // a list of crises by country
-            }
-            crises_map[country_code].push(crisis);
-        }); // each crisis
-
-        /*
-         * Set colors
-         *     ~~~~~~
-         */
-        $("#map").vectorMap('set', 'colors', colors);
-
-        /*
-         * Set labels
-         *     ~~~~~~
-         */
-        $("#map").bind('labelShow.jvectormap', function (event, label, code) {
-            label.html(_tooltip_content(crises_map, code, label.text()));
-            return true;
-            //_show_tooltip(crises_map, code, label.text());
-            //event.preventDefault();
-            //return false;
-        });
-
-    } // _update_map
-
-    function update() {
-        $.get("/data", _update_map);
-        $("#map").vectorMap(vectorMapSettings);
-    } // update
 
     /*
-     * Convert a Country name to its ISO3166 code
+     * Set labels
+     *     ~~~~~~
      */
-    function name_to_iso3166(country_name) {
-        var name,
-            cc;
+    //$("#map").bind('labelShow.jvectormap', function (event, label, code) {
+    //  label.html(_tooltip_content(crises_map, code, label.text()));
+    //  return true;
+      //_show_tooltip(crises_map, code, label.text());
+      //event.preventDefault();
+      //return false;
+    //});
 
-        name = $.trim(country_name.toUpperCase());
-        cc   = siwm._iso3166[name];
+  } // _update_map
 
-        if (cc === undefined) {
-            log("Country \"" + name + "\" has no iso3166 code");
-            return '';
-        } 
+  $.get("/data", update_map);
+  map = new jvm.WorldMap({
+    map: 'world_mill_en',
+    container: $("#map"),
+    onRegionLabelShow: function(e, el, code){
+      el.html(tooltip_content(code, el.text()));
+        //el.html()+' (GDP - '+123+')');
+    }
+  });
 
-        return cc.toLowerCase();
-    } // name_to_iso3166
-
-    return {
-        update: update
-    };
-})();
+  return {
+    map: map,
+  };
+}());
 
 /*
  * Mapping of canonical and colloquial country names to their

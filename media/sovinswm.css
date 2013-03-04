@@ -75,7 +75,8 @@ h1, h2, h3 {
 }
 
 h1 { 
-    text-shadow: 1px 1px 1px #aaa;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.6),
+                 0px 0px 5px rgba(0, 0, 0, 0, 0);
     color: #736338;
     font-size: 200%;
     margin-top: 2em;
@@ -83,15 +84,7 @@ h1 {
     float: left;
     width: 56%;
     line-height: 1.2em;
-    background-color: #333;
     padding: 0.5em 1em;
-
-    -moz-box-shadow: 2px 2px 8px #aaa;
-    -webkit-box-shadow: 2px 2px 8px #aaa;
-    box-shadow: 2px 2px 8px #aaa;
-
-    -moz-border-radius: 15px;
-    border-radius: 15px;
 }
 
 h2 {
@@ -189,22 +182,11 @@ table td {
     -moz-border-radius: 5px 10px 5px 10px / 10px 5px 10px 5px;
 }
 
-
 .jvectormap-label {
     border-radius: 10px;
     -moz-border-radius: 10px;
     padding: 4px 0.23em;
     border: solid 1px #555;
-}
-
-.jvectormap-zoomin {
-    left: 10px;
-    top: 10px;
-}
-
-.jvectormap-zoomout {
-    left: 10px;
-    top: 40px;
 }
 
 div.about {
@@ -222,4 +204,10 @@ div.even {
 
 div.odd {
     /* background-color: #4e4e4e; */
+}
+
+.crisis {
+  // background-color: red;
+  font-size: 80%;
+  padding: 2px;
 }
