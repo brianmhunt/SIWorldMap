@@ -10,6 +10,9 @@ handlers:
 - url: /m
   static_dir: media/
 
+- url: /v
+  static_dir: vendors/
+
 - url: /.*
   script: data.app
 

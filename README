@@ -4,3 +4,7 @@ Sovereign Insolvency World Map
 Deployed on Google App Engine at:
 
 http://sovinswm.appspot.com
+
+Test with e.g.
+
+    $ dev_appserver.py --port 8001 .

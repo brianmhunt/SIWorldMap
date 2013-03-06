@@ -12,54 +12,75 @@
 
     <meta property="og:title" content="Sovereign Insolvency World Map" />
     <meta property="og:type" content="website" />
-    <meta property="og:description" content="A world map showing the years that sovereigns have defaulted on their debts."/>
-    <meta name="description" content="A world map showing the years that sovereigns have defaulted on their debts."/>
+    <meta property="og:description"
+      content="A world map showing the years that sovereigns have defaulted on their debts."/>
+    <meta name="description"
+      content="A world map showing the years that sovereigns have defaulted on their debts."/>
     <meta property="og:url" content="http://sovinswm.appspot.com" />
-    <meta property="og:image" content="http://sovinswm.appspot.com/m/image_130x110.jpg" />
+    <meta property="og:image"
+      content="http://sovinswm.appspot.com/m/image_130x110.jpg" />
     <meta name="title" content="Sovereign Insolvency World Map" />
     <meta name="byline" content="Brian M Hunt" />
-    <meta name="keywords" content="sovereign insolvency, sovereign bankruptcy, sovereign default, sovereign, insolvency, bankruptcy, default, debt, imf, fsb, financial stability board, MOCOMILA, SISG, international law association, international monetary fund, financial, stability, euro, bankruptcy, state default"/>
+    <meta name="keywords" content="sovereign insolvency, sovereign bankruptcy,
+    sovereign default, sovereign, insolvency, bankruptcy, default, debt, imf,
+    fsb, financial stability board, MOCOMILA, SISG, international law
+    association, international monetary fund, financial, stability, euro,
+    bankruptcy, state default"/>
 
-    <link rel="image_src" href="http://sovinswm.appspot.com/m/image_130x110.jpg" />
+    <link rel="image_src" href="http://sovinswm.appspot.com/m/image_130x110.japg" />
     <link rel="img_src" href="http://sovinswm.appspot.com/m/image_130x110.jpg" />
-    <link rel='stylesheet' type='text/css' href='m/jvm/jquery-jvectormap-1.2.2.css' />
-    <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'/>
-    <link href='http://fonts.googleapis.com/css?family=Droid+Serif:400,400italic' rel='stylesheet' type='text/css'/>
+    <link rel='stylesheet' type='text/css'
+      href='/v/components/bootstrap/docs/assets/css/bootstrap.css'/>
+    <link rel='stylesheet' type='text/css' href='/m/jvm/jquery-jvectormap-1.2.2.css' />
+
+    <link href='http://fonts.googleapis.com/css?family=Advent+Pro:100' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Advent+Pro:100|Open+Sans' rel='stylesheet' type='text/css'>
+
+
     <link rel='stylesheet' type='text/css' href='m/sovinswm.css'/>
 
 </head>
 
 <body>
-<div id="content">
-    <div class='even'>
-        <h1>The Sovereign Insolvency World Map</h1>
-        <h2>Visualizing the history of sovereign financial crises</h2>
-        <aside>Move your mouse cursor over (or click) a country to see 
-        the years they have defaulted.</aside>
+
+  <header>
+    <h1>Sovereign Insolvency World Map</h1>
+    <h2>Visualizing the history of sovereign financial crises</h2>
+    Move your mouse cursor over (or click) a country to see 
+      the years they have defaulted.
+  </header>
+
+
+<div class='container'>
+  <div id="map" style='width: 90%'></div>
+</div>
+
+<div class='container'>
+  <div id='share'>
+    <!-- AddThis Button BEGIN -->
+    <div class="addthis_toolbox addthis_default_style ">
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+      <a class="addthis_button_tweet"></a>
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+      <a class="addthis_counter addthis_pill_style"></a>
     </div>
+    <script type="text/javascript"
+      src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=ra-4f18c7ee21e7d6ef"></script>
+    <!-- AddThis Button END -->
+  </div>
+</div>
 
-    <div id="map" style='width: 90%'></div>
-
-    <div id='share'>
-        <!-- AddThis Button BEGIN -->
-        <div class="addthis_toolbox addthis_default_style ">
-        <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
-        <a class="addthis_button_tweet"></a>
-        <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
-        <a class="addthis_counter addthis_pill_style"></a>
-        </div>
-        <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=ra-4f18c7ee21e7d6ef"></script>
-        <!-- AddThis Button END -->
-    </div>
-
-<div class='odd'>
-    <table><tr><td>
+<div class='container'>
+  <div class='span5 offset1'>
     <h3>Sources</h3>
     <p>The information in this map is stored in a 
     <a href='https://docs.google.com/spreadsheet/pub?hl=en_US&amp;hl=en_US&amp;key=0Ana9axt3-wi9dHctSUJXQ0J3VUFPVHhnQUxyUEk5b2c&amp;output=html'>Google Docs Spreadsheet</a>. In particular, see the <a href='https://docs.google.com/spreadsheet/pub?hl=en_US&key=0Ana9axt3-wi9dHctSUJXQ0J3VUFPVHhnQUxyUEk5b2c&hl=en_US&gid=1'>Sources tab</a> of that spreadsheet for a list of sources used for this map.
     </p>
 
-    <p>This map was inspired by a similar map by <a href='http://www.allenovery.com/AOWEB/PeopleOffices/CVDetails.aspx?contentTypeID=4&itemID=7692&prefLangID=410'>Philip Wood Q.C.</a></p>
+    <p>This map was inspired by a similar map by <a
+      href='http://www.allenovery.com/people/en-gb/Pages/Philip-Wood.aspx'>
+      Philip Wood Q.C.</a>
+    </p>
 
     <p>This page was 
     <a href='https://github.com/brianmhunt/SIWorldMap'>developed (GitHub)</a> with
@@ -67,42 +88,89 @@
     on <a href='http://code.google.com/appengine/'>Google App Engine</a> 
     with <a href='http://flask.pocoo.org/'>Flask</a>.
     </p>
+  </div>
 
+  <div class='span5'>
+    <h3>Author</h3>
+    <p>Brian M Hunt is a lawyer in Canada. He was a founder &amp;
+    co-rapporteur of the
+    <a href='http://www.ila-hq.org/en/committees/study_groups.cfm/cid/1026'>
+      Sovereign Insolvency Study Group</a> 
+    of the
+    <a href='http://www.ila-hq.org/'>International Law Association</a>,
+    and its successor the 
+    <a href='http://www.ila-hq.org/en/committees/study_groups.cfm/cid/1046'>
+      Sovereign Bankruptcy Group.</a>
+    </p>
 
-    </td><td>
-        <h3>Author</h3>
-        <p>Brian M Hunt is a lawyer in Canada, and a founder &amp; co-rapporteur
-        of the <a
-          href='http://www.ila-hq.org/en/committees/study_groups.cfm/cid/1026'>Sovereign
-          Insolvency Study Group</a> 
-        of the <a href='http://www.ila-hq.org/'>International Law Association</a>.
-        </p>
-    
-        Tel: <a href='tel:+12896844677'>+1.289.684.4677</a><br/>
-        Email: <a href='mailto:brianmhunt@gmail.com'>brianmhunt@gmail.com</a><br/>
-        Wordpress: <a href="http://sovins.wordpress.com/">sovins.wordpress.com</a><br/>
-        Twitter: <a href='https://twitter.com/#!/brianmhunt'>@brianmhunt</a><br/>
-        LinkedIn: <a href='http://ca.linkedin.com/in/brianmhunt '>brianmhunt</a>
-    </td></tr></table>
+    <table class='contact'>
+      <tr>
+        <td>Tel</td>
+        <td><a href='tel:+12896844677'>+1.289.684.4677</a></td>
+      </tr>
+      <tr>
+        <td>Email</td>
+        <td>
+          <a href='mailto:brianmhunt@gmail.com'>brianmhunt@gmail.com</a>
+        </td>
+      </tr>
+      <tr>
+        <td>Wordpress</td>
+        <td>
+          <a href="http://sovins.wordpress.com/">sovins.wordpress.com</a>
+        </td>
+      </tr>
+      <tr>
+        <td>Twitter</td>
+        <td><a href='https://twitter.com/#!/brianmhunt'>@brianmhunt</a></td>
+      </tr>
+      <tr>
+        <td>LinkedIn</td>
+        <td>
+          <a href='http://ca.linkedin.com/in/brianmhunt '>brianmhunt</a>
+        </td>
+      </tr>
+    </table>
 
-    <aside>Please feel free to contact the author with comments, questions and 
-        contributions.</aside>
+    <p>Please do not hesitate to contact the author with comments,
+    corrections, questions and contributions.
+    </p>
+  </div>
 </div>
-<div class='odd'>
-    <table><tr><td>
-    <h3>License</h3>
-    
-    <div class='license'>
-    Copyright &copy; 2012 Brian M Hunt.<br/>
-        <a rel="license" href="http://creativecommons.org/licenses/by/3.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/3.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/InteractiveResource" property="dct:title" rel="dct:type">Sovereign Insolvency World Map</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="https://sovinswm.appspot.com" property="cc:attributionName" rel="cc:attributionURL">Brian M Hunt</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 Unported License</a>.<br />Based on a work at <a xmlns:dct="http://purl.org/dc/terms/" href="https://sovinswm.appspot.com" rel="dct:source">sovinswm.appspot.com</a>.
-        </div></td><td>
 
+<div class='container'>
+  <div class='offset1 span5'>
+    <h3>License</h3>
+
+    <div class='license'>
+      <a rel="license" class='pull-left' style='padding-right: 6px;'
+        href="http://creativecommons.org/licenses/by/3.0/">
+        <img alt="Creative
+        Commons License" style="border-width:0"
+        src="http://i.creativecommons.org/l/by/3.0/88x31.png" />
+      </a>
+      Copyright &copy; 2012 Brian M Hunt.<br/>
+      <span xmlns:dct="http://purl.org/dc/terms/"
+        href="http://purl.org/dc/dcmitype/InteractiveResource"
+        property="dct:title" rel="dct:type">Sovereign Insolvency World
+        Map</span> by <a xmlns:cc="http://creativecommons.org/ns#"
+        href="https://sovinswm.appspot.com" property="cc:attributionName"
+        rel="cc:attributionURL">Brian M Hunt</a> is licensed under a <a
+        rel="license"
+        href="http://creativecommons.org/licenses/by/3.0/">Creative Commons
+        Attribution 3.0 Unported License</a>.<br />Based on a work at <a
+        xmlns:dct="http://purl.org/dc/terms/"
+        href="https://sovinswm.appspot.com"
+        rel="dct:source">sovinswm.appspot.com</a>.
+    </div>
+  </div>
+  <div class='span4'>
     <h3>Disclaimer</h3>
     <p>All efforts have been made to ensure that the material on this website
     is accurate, however no warranty or representation is made about its
     accuracy. Nothing on this site is legal advice, nor does anything on this
     site constitute or give rise to a legal retainer.</p>
-    </td></tr></table>
+  </div>
 </div>
 
 </div>
@@ -128,7 +196,9 @@
 </script>
 
   <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-  <script src="http://twitter.github.com/hogan.js/builds/2.0.0/hogan-2.0.0.js"></script>
+  <!-- <script
+    src="/v/components/bootstrap/docs/assets/js/bootstrap.js"></script> -->
+  <script src="/v/components/hogan/web/builds/2.0.0/hogan-2.0.0.min.js"></script>
   
   <script type="text/javascript">
     var _gaq = _gaq || [];
@@ -141,9 +211,9 @@
       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
     })();
   </script>
-  <script src='m/jvm/jquery-jvectormap-1.2.2.min.js' type="text/javascript"></script>
-  <script src="m/jvm/jquery-jvectormap-world-mill-en.js" type="text/javascript"></script>
-  <script src='m/sovinswm.js'></script>
+  <script src='/m/jvm/jquery-jvectormap-1.2.2.min.js' type="text/javascript"></script>
+  <script src="/m/jvm/jquery-jvectormap-world-mill-en.js" type="text/javascript"></script>
+  <script src='/m/sovinswm.js'></script>
 
 </body>
 </html>
