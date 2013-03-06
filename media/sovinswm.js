@@ -1,4 +1,4 @@
-/*global $: false, jvm: false */
+/*global $: false, jvm: false, Hogan: false */
 /*
  *
  * Sovereign Insolvency World Map
@@ -21,79 +21,29 @@ var siwm = siwm || (function () {
 
     template = Hogan.compile($("#details-template").text());
 
-/*
- * Return a jQuery element (not in the DOM) with the content of the
- * tooltip for a particular country.
- */
+  /*
+   * Return HTML with the content of the tooltip for a particular country.
+   */
   function tooltip_content(country_code, country_name) {
-    var country_crises;
+    var country_crises, context;
 
-    country_crises = crises_map[country_code].sort(function (a, b) {
-      return parseInt(a.Year, 10) - parseInt(b.Year, 10);
-    });
-
-    console.log("CRISES:", country_crises);
-
-    return template.render({
-      name: country_name,
-      crises: country_crises
-    });
-
-    // TODO eg _.template
-    // no crises for this country.
-    if (country_crises === undefined) {
-      tt_html = $("<div><header>" + country_name + "</header></div>");
-      tt_html.append("No history of default.");
-      return tt_html;
+    if (crises_map[country_code]) {
+      country_crises = crises_map[country_code].sort(function (a, b) {
+        return parseInt(a.Year, 10) - parseInt(b.Year, 10);
+      });
+    } else {
+      country_crises = undefined;
     }
 
-    tt_html = $("<div><header>" + country_name + "</header></div>");
+    context = {
+      name: country_name,
+      crises: country_crises
+    };
 
+    console.log("Crises for", country_name, ":", context);
 
-    $.each(country_crises, function (i, crisis) {
-      var crisis_html = $("<div class='crisis'></div>");
-
-      crisis_html.append("<span class='year'>" + crisis.Year 
-        + "</span> ");
-
-      if (crisis.Comment !== null) {
-        crisis_html.append("<span class='comment'>"
-          + crisis.Comment + "</span>");
-      }
-
-      if (crisis.Amount !== null && $.trim(crisis.Amount) !== '') {
-        crisis_html.append("<span>; Amount (million): <span class=amt>" +
-          crisis.Amount + "</span></span>");
-      }
-
-      tt_html.append(crisis_html);
-    });
-
-    crises[country_code] = tt_html; // save cache.
-    return tt_html;
+    return template.render(context);
   } // _tooltip_content
-
-  /*
-   * Show the tooltip for this Country
-   *
-   function _show_tooltip(crises_map, country_code, country_name) {
-   $("#map, h2").qtip({
-   content: "HEY", //tt_html,
-   position: {
-   my: 'top left',
-   target: 'mouse',
-   viewport: $(window),
-   adjust: {
-   x: 10, y: 10
-   }
-   },
-   hide: {
-   fixed: true
-   },
-   style: 'ui-tooltip-shadow'
-   }); // qtip
-   } // _show_tooltip
-  // */
 
   /*
    * Convert a Country name to its ISO3166 code
@@ -146,8 +96,11 @@ var siwm = siwm || (function () {
 
       country_code = name_to_iso3166(crisis.Country);
       crises[i]._cc = country_code; // map crisis to country code
+      crises[i].has_amount = function () {
+        return !!crises[i].Amount;
+      };
       crisis.Amount = crisis['Amount (million)']; // shorthand
-      colors[country_code] = '#F00'; // highlight countries w/ default
+      colors[country_code] = '#900'; // highlight countries w/ default
       if (crises_map[country_code] === undefined) {
         crises_map[country_code] = []; // a list of crises by country
       }
@@ -162,33 +115,33 @@ var siwm = siwm || (function () {
     console.log("Crisis map: ", crises_map);
     console.log("Colors map: ", colors);
 
-
-    /*
-     * Set labels
-     *     ~~~~~~
-     */
-    //$("#map").bind('labelShow.jvectormap', function (event, label, code) {
-    //  label.html(_tooltip_content(crises_map, code, label.text()));
-    //  return true;
-      //_show_tooltip(crises_map, code, label.text());
-      //event.preventDefault();
-      //return false;
-    //});
+    map = new jvm.WorldMap({
+      map: 'world_mill_en',
+      container: $("#map"),
+      backgroundColor: "#006",
+      regionStyle: {
+        initial: {
+          fill: '#88a'
+        }
+      },
+      onRegionLabelShow: function(e, el, code){
+        el.html(tooltip_content(code, el.text()));
+      },
+      series: {
+        regions: [{
+          values: colors,
+          attribute: 'fill'
+        }]
+      }
+    });
 
   } // _update_map
 
   $.get("/data", update_map);
-  map = new jvm.WorldMap({
-    map: 'world_mill_en',
-    container: $("#map"),
-    onRegionLabelShow: function(e, el, code){
-      el.html(tooltip_content(code, el.text()));
-        //el.html()+' (GDP - '+123+')');
-    }
-  });
 
   return {
-    map: map,
+      map: map,
+      crises: crises_map
   };
 }());
 
@@ -198,7 +151,7 @@ var siwm = siwm || (function () {
  */
 siwm._iso3166 = {
 	"AFGHANISTAN": "AF",
-	"�LAND ISLANDS": "AX",
+	"ÅLAND ISLANDS": "AX",
 	"ALBANIA": "AL",
 	"ALGERIA": "DZ",
 	"AMERICAN SAMOA": "AS",
@@ -253,9 +206,10 @@ siwm._iso3166 = {
 	"COOK ISLANDS": "CK",
 	"COSTA RICA": "CR",
 	"COTE D'IVOIRE": "CI",
+	"CÔTE D'IVOIRE": "CI",
 	"CROATIA": "HR",
 	"CUBA": "CU",
-	"CURA�AO": "CW",
+	"CURAÇAO": "CW",
 	"CYPRUS": "CY",
 	"CZECH REPUBLIC": "CZ",
 	"DENMARK": "DK",
@@ -383,12 +337,12 @@ siwm._iso3166 = {
 	"PORTUGAL": "PT",
 	"PUERTO RICO": "PR",
 	"QATAR": "QA",
-	"R�UNION": "RE",
+	"RÉUNION": "RE",
 	"ROMANIA": "RO",
 	"RUSSIAN FEDERATION": "RU",
 	"RUSSIA": "RU",
 	"RWANDA": "RW",
-	"SAINT BARTH�LEMY": "BL",
+	"SAINT BARTHÉLEMY": "BL",
 	"SAINT HELENA, ASCENSION AND TRISTAN DA CUNHA": "SH",
 	"SAINT KITTS AND NEVIS": "KN",
 	"SAINT LUCIA": "LC",
