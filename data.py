@@ -8,7 +8,8 @@ import csv
 import json
 import logging
 import StringIO
-from google.appengine.api import memcache, urlfetch
+from google.appengine.api import urlfetch
+from google.appengine.ext import ndb
 from flask import Flask, jsonify, abort, send_file
 
 #
@@ -21,7 +22,14 @@ DATA_URL = "https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=0Ana9a
 # Data content
 # ~~~~~~~~~~~~
 # 
-_dc = None
+class MapData(ndb.Model):
+    created = ndb.DateTimeProperty(auto_now_add=True, indexed=True)
+    content = ndb.JsonProperty(compressed=True)
+    content_hash = ndb.StringProperty()
+
+    @classmethod
+    def head(cls):
+        return cls.query().order(-cls.created).get()
 
 #
 # Flask app
@@ -37,40 +45,41 @@ app = Flask(__name__)
 #
 @app.route("/data")
 def hello():
-    global _dc
+    head = MapData.head()
 
-    if _dc is not None:
-        return jsonify(data=_dc)
+    if not head:
+        refresh()
+        head = MapData.head()
 
-    _dc = memcache.get('dc')
-
-    if _dc is not None:
-        return jsonify(data=_dc)
-
-    result = urlfetch.fetch(url=DATA_URL)
-
-    if result.status_code == 200:
-        csv_data = StringIO.StringIO(result.content)
-    else:
-        logging.error("Unable to get DATA URL.")
-        abort(500)
-
-    _dc = [row for row in csv.DictReader(csv_data)] 
-
-    memcache.set("dc", _dc)
-
-    return jsonify(data=_dc)
+    return jsonify(data=head.content)
 
 @app.route('/')
 def main():
     return send_file("index.html")
 
-@app.route('/flush')
-def flush():
-    global _dc
-    _dc = None
-    memcache.flush_all()
-    return "Flushed."
+@app.route('/refresh')
+def refresh():
+    import hashlib
+    result = urlfetch.fetch(url=DATA_URL)
+
+    if result.status_code == 200:
+        csv_data = StringIO.StringIO(result.content)
+        content_hash = hashlib.md5(result.content).hexdigest()
+    else:
+        logging.error("Unable to get DATA URL.")
+        abort(500)
+
+    head = MapData.head()
+    if head and head.content_hash == content_hash:
+        return jsonify(status="unchanged")
+
+    content = [row for row in csv.DictReader(csv_data)] 
+
+    c = MapData(content_hash=content_hash, content=content)
+    c.put()
+
+    return jsonify(status='ok')
 
 if __name__ == "__main__":
     app.run()
+
